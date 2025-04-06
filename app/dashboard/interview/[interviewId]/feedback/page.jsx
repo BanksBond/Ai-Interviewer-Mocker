@@ -91,7 +91,7 @@ function feedback({ params }) {
                     </h2>
                     <h2 className="p-2 border rounded-lg bg-blue-50 text-sm text-primary">
                       <strong>Feedback: </strong>
-                      {item.correctAns}
+                      {item.feedback}
                     </h2>
                   </div>
                 </CollapsibleContent>
