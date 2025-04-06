@@ -7,12 +7,14 @@ import QuestionsSection from "./_components/QuestionsSection";
 import RecordAnswerSection from "./_components/RecordAnswerSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 function StartInterview({ params }) {
   const unwrappedParams = use(params);
   const [interviewData, setInterviewData] = useState([]);
   const [mockInterviewQuestions, setMockInterviewQuestions] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(0);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     GetInterviewDetails();
   }, []);
@@ -59,8 +61,12 @@ function StartInterview({ params }) {
         {activeQuestion == mockInterviewQuestions?.length - 1 && (
           <Link
             href={"/dashboard/interview/" + interviewData.mockId + "/feedback"}
+            onClick={() => setLoading(true)}
           >
-            <Button>End Interview</Button>
+            <Button>
+              {loading && <Loader2 className="animate-spin mr-2" />}
+              End Interview
+            </Button>
           </Link>
         )}
       </div>

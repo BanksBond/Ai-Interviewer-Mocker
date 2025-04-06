@@ -16,6 +16,7 @@ function Dashboard() {
       </div>
 
       {/* Previous Interview List */}
+
       <InterviewList />
     </div>
   );

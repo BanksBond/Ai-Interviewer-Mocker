@@ -36,10 +36,14 @@ function RecordAnswerSection({
   if (error) return <p>Web Speech API is not available in this browser 🤷‍</p>;
 
   useEffect(() => {
-    results.map((result) =>
-      setUserAnswer((prev) => prev + " " + result.transcript)
-    );
-  }, [results]);
+    if (results.length > 0) {
+      const combinedResults = results
+        .map((result) => result.transcript)
+        .join(" ");
+      setUserAnswer((prev) => prev + " " + combinedResults);
+      setResults([]); // Clear results after processing
+    }
+  }, [results, setResults]);
 
   useEffect(() => {
     if (!isRecording && userAnswer?.length > 10) {
@@ -99,93 +103,80 @@ function RecordAnswerSection({
   };
 
   return (
-    <div className="flex  justify-center flex-col">
-      {/* <div className="flex flex-col mt-20 items-center justify-center rounded-lg p-5 bg-black">
-        <WebcamIcon className="absolute" width={200} height={200} />
-        <Webcam
-          mirrored
-          color="white"
-          style={{
-            height: 300,
-            width: "100%",
-            zIndex: 10,
-          }}
-        />
-      </div> */}
-      {webCamEnabled ? (
-        <>
-          <Webcam
-            onUserMedia={() => setWebCamEnabled(true)}
-            onUserMediaError={() => setWebCamEnabled(false)}
-            mirrored={true}
-            audio={false}
-            // height={720}
-            width={720}
-            screenshotFormat="image/jpeg"
-            videoConstraints={{
-              facingMode: "user",
-            }}
-          />
-          <Button
-            variant="outline"
-            onClick={() => setWebCamEnabled(false)}
-            className="w-full text-base mt-8"
-          >
-            Disable Webcam
-          </Button>
-        </>
-      ) : (
-        <>
-          <WebcamIcon className="h-72 w-full my-7 p-20 bg-secondary rounded-lg border " />
-
-          <Button
-            variant="outline"
-            onClick={() => setWebCamEnabled(true)}
-            className="w-full text-base"
-          >
-            Enable Webcam
-          </Button>
-        </>
-      )}
-      <Button
-        disabled={loading}
-        variant="outline"
-        className="my-10"
-        onClick={SaveUserAnswer}
-      >
-        {isRecording ? (
-          <h2 className="flex gap-2 items-center animate-pulse text-red-600">
-            {loading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <>
-                <StopCircle />
-                Stop Recording
-              </>
-            )}
-          </h2>
+    <>
+      <div className="flex justify-center flex-col relative">
+        {webCamEnabled ? (
+          <>
+            <Webcam
+              onUserMedia={() => setWebCamEnabled(true)}
+              onUserMediaError={() => setWebCamEnabled(false)}
+              mirrored={true}
+              audio={false}
+              width={720}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{
+                facingMode: "user",
+              }}
+            />
+            <Button
+              variant="outline"
+              onClick={() => setWebCamEnabled(false)}
+              className="w-full text-base mt-8"
+            >
+              Disable Webcam
+            </Button>
+          </>
         ) : (
-          <h2 className="flex gap-2 items-center text-primary">
-            {loading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <>
-                <Mic />
-                Start Recording
-              </>
-            )}
-          </h2>
+          <>
+            <WebcamIcon className="h-72 w-full my-7 p-20 bg-secondary rounded-lg border " />
+
+            <Button
+              variant="outline"
+              onClick={() => setWebCamEnabled(true)}
+              className="w-full text-base"
+            >
+              Enable Webcam
+            </Button>
+          </>
         )}
-      </Button>
-      <div>
-        <ul>
-          {results.map((result) => (
-            <li key={result.timestamp}>{result.transcript}</li>
-          ))}
-          {interimResult && <li>{interimResult}</li>}
-        </ul>
+        <Button
+          disabled={loading}
+          variant="outline"
+          className="my-10"
+          onClick={SaveUserAnswer}
+        >
+          {isRecording ? (
+            <h2 className="flex gap-2 items-center animate-pulse text-red-600">
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <StopCircle />
+                  Stop Recording
+                </>
+              )}
+            </h2>
+          ) : (
+            <h2 className="flex gap-2 items-center text-primary">
+              {loading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <>
+                  <Mic />
+                  Start Recording
+                </>
+              )}
+            </h2>
+          )}
+        </Button>
+        {/* Subtitles overlay */}
+        {isRecording && (
+          <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-75 text-white px-4 py-2 rounded-lg text-center">
+            {interimResult || userAnswer || "Listening..."}
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 

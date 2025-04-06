@@ -1,9 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/utils/db";
 import { MockInterview } from "@/utils/schema";
 import { eq } from "drizzle-orm";
-import { Lightbulb, WebcamIcon } from "lucide-react";
+import { Lightbulb, Loader2, WebcamIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, use, useState } from "react";
 import Webcam from "react-webcam";
@@ -11,6 +12,7 @@ import Webcam from "react-webcam";
 function Interview({ params }) {
   const [interviewData, setInterviewData] = useState([]);
   const [webCamEnabled, setWebCamEnabled] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const unwrappedParams = use(params);
 
@@ -35,17 +37,29 @@ function Interview({ params }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div className="flex flex-col my-5  gap-5 ">
           <div className="flex flex-col gap-5 p-5 rounded-lg border">
-            <h2 className="text-lg">
+            <h2 className="text-lg flex gap-2">
               <strong>Job Role / Position: </strong>
-              {interviewData[0]?.jobPosition}
+              {interviewData[0]?.jobPosition ? (
+                interviewData[0].jobPosition
+              ) : (
+                <Skeleton className="h-8 w-1/2" />
+              )}
             </h2>
-            <h2 className="text-lg">
+            <h2 className="text-lg flex gap-2">
               <strong>Job Description: </strong>
-              {interviewData[0]?.jobDesc}
+              {interviewData[0]?.jobDesc ? (
+                interviewData[0].jobDesc
+              ) : (
+                <Skeleton className="h-8 w-1/2" />
+              )}
             </h2>
-            <h2 className="text-lg">
+            <h2 className="text-lg flex gap-2">
               <strong>Years of Experience: </strong>
-              {interviewData[0]?.jobExperience}
+              {interviewData[0]?.jobExperience ? (
+                interviewData[0].jobExperience
+              ) : (
+                <Skeleton className="h-8 w-1/2" />
+              )}
             </h2>
           </div>
           <div className="p-5 border rounded-lg border-yellow-300 bg bg-yellow-100">
@@ -69,7 +83,6 @@ function Interview({ params }) {
               onUserMediaError={() => setWebCamEnabled(false)}
               mirrored={true}
               audio={false}
-              // height={720}
               width={720}
               screenshotFormat="image/jpeg"
               videoConstraints={{
@@ -96,8 +109,14 @@ function Interview({ params }) {
           href={
             "/dashboard/interview/" + unwrappedParams.interviewId + "/start"
           }
+          onClick={() => {
+            setLoading(true);
+          }}
         >
-          <Button>Start Interview</Button>
+          <Button>
+            {loading && <Loader2 className="animate-spin" />}
+            Start Interview
+          </Button>
         </Link>
       </div>
     </div>

@@ -1,23 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { chatSession } from "@/utils/GeminiAiModel";
-import { Loader2Icon, PocketIcon } from "lucide-react";
 import { db } from "@/utils/db";
+import { chatSession } from "@/utils/GeminiAiModel";
 import { MockInterview } from "@/utils/schema";
-import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
+import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 function AddNewInterview() {
   const [openDialog, setOpenDialog] = useState(false);
@@ -128,8 +127,7 @@ function AddNewInterview() {
                     />
                   </div>
                 </div>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+
                 <div className="flex gap-6 justify-end">
                   <Button variant="ghost" onClick={() => setOpenDialog(false)}>
                     Cancel

@@ -34,6 +34,11 @@ function feedback({ params }) {
     setFeedbackList(result);
     setLoading(false);
   };
+
+  const rating = feedbackList?.reduce((acc, item) => {
+    return acc + +item.rating;
+  }, 0);
+
   return (
     <div className="p-10">
       {feedbackList.length == 0 && !loading ? (
@@ -49,7 +54,7 @@ function feedback({ params }) {
             Here is your interview feedback
           </h2>
           <h2 className="text-primary text-lg my-3 animate-fade-in">
-            Your overall interview rating: <strong>7/10</strong>
+            Your overall interview rating: <strong>{rating}/5</strong>
           </h2>
 
           <h2 className="text-sm text-gray-500 animate-fade-in">
